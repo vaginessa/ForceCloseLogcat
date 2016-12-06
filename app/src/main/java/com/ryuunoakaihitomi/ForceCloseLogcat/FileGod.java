@@ -67,32 +67,3 @@ public class FileGod
 		}  
 	} 
 }
-
-		}
-		catch (IOException e)
-		{}  
-		return res;
-	}  
-	private static void delete(File f)
-	{   
-		if (f.isFile())
-		{  
-			f.delete();  
-			return;  
-		}  
-		if (f.isDirectory())
-		{  
-			File[] childFiles = f.listFiles();  
-			if (childFiles == null || childFiles.length == 0)
-			{  
-				f.delete();  
-				return;  
-			}  
-			for (int i = 0; i < childFiles.length; i++)
-			{  
-				delete(childFiles[i]);  
-			}  
-			f.delete();  
-		}  
-	} 
-}
