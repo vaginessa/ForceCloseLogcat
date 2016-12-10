@@ -28,6 +28,7 @@ public class FCListener extends Service implements Runnable
 		}
 		catch (IOException e)
 		{}
+		FileGod.D("/sdcard/FClog/cache");
 		t.start();
 
 	}
@@ -62,24 +63,31 @@ public class FCListener extends Service implements Runnable
 				{
 					if (line.contains("FATAL EXCEPTION"))
 					{
-						String getLog=line + "\r\n";
-						String getView=line + "<br><br>";
+						String getLog=new String((line + "\r\n").getBytes("iso-8859-1"), "UTF-8");
+						String getView=new String((line + "<br><br>").getBytes("iso-8859-1"), "UTF-8");
 						String getTime="";
-						String getCrashPos="";
-						while (!(line = dis.readLine()).contains("Force finishing"))
+						String getPackage="";
+						while ((line = dis.readLine()).contains("AndroidRuntime"))
 						{
-							getView += LogDecorate.line(line.subSequence(48, line.length()) + "<br><br>");
-							getLog += line.subSequence(48, line.length()) + "\r\n";
+							if (line.contains("Process:"))
+							{
+								getPackage = line.subSequence(58, line.indexOf(",")).toString();
+								if (getPackage.contains(":"))
+								{
+									getPackage = getPackage.subSequence(0, getPackage.indexOf(":")).toString();
+								}
+							}
+							getView += new String(LogDecorate.line(line.subSequence(48, line.length()) + "<br><br>").getBytes("iso-8859-1"), "UTF-8");
+							getLog += new String((line.subSequence(48, line.length()) + "\r\n").getBytes("iso-8859-1"), "UTF-8");
 							Thread.yield();
 						}
-						getCrashPos = line;
 						getTime = NowTimeText.get(false);
 						FileGod.W(getLog, "/sdcard/FClog/" + getTime + ".log");
 						if (Boolean.valueOf(Config.G("mode")))
 						{
-							FileGod.W(getTime, "/sdcard/FClog/cache/FCtime.dat");
-							FileGod.W(getCrashPos, "/sdcard/FClog/cache/where.dat");
-							FileGod.W(getView, "/sdcard/FClog/cache/" + getTime + "view.dat");
+							FileGod.W(getTime, "/sdcard/FClog/cache/FCtime");
+							FileGod.W(getPackage, "/sdcard/FClog/cache/FCPackage");
+							FileGod.W(getView, "/sdcard/FClog/cache/" + getTime + "view");
 							FCGetWork.FCReceive();
 						}
 						java.lang.Runtime.getRuntime().exec("su -c logcat -c");

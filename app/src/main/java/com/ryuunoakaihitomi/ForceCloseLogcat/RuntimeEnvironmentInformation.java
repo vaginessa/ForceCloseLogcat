@@ -7,7 +7,6 @@ public class RuntimeEnvironmentInformation
 	{
 		String infobody="";
 		infobody += "send time=" + NowTimeText.get(true) + "\n";
-		infobody += "from=" + FCGetWork.FCPosition() + "\n";
 		infobody += "model=" + android.os.Build.MODEL + "\n";
 		infobody += "android version="  + android.os.Build.VERSION.RELEASE + "\n";
 		infobody += "android api level="  + android.os.Build.VERSION.SDK_INT + "\n";

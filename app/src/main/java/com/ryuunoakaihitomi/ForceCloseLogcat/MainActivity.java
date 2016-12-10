@@ -8,9 +8,8 @@ import android.view.*;
 import android.view.View.*;
 import android.widget.*;
 import java.io.*;
-import java.util.*;
+
 import java.lang.Process;
-import android.text.*;
 
 public class MainActivity extends Activity 
 {

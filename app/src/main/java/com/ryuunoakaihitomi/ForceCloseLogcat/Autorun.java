@@ -10,7 +10,7 @@ public class Autorun extends BroadcastReceiver
 	{
 		if (!MainActivity.isRoot())
 		{
-			Toast.makeText(p1, "不能获取root权限，应用崩溃日志记录器无法运行！", Toast.LENGTH_SHORT).show();
+			Toast.makeText(p1, "root获取失败，本应用不具有可正常运行的基础", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		else

@@ -25,13 +25,13 @@ public class FCNotification
 		Notification n = new Notification(R.drawable.ic_launcher, "本应用已经捕获一个FC", System.currentTimeMillis());
 		NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
 		PendingIntent p = PendingIntent.getActivity(c, 0, intent, 0);
-		n.setLatestEventInfo(c, "在" + NowTimeText.get(true) + "时发生", "来自 " + getProgramNameByPackageName(overallSituationContext.get(), FCGetWork.FCPackageName()), p);
+		n.setLatestEventInfo(c, "时刻 " + NowTimeText.get(true) , "来自 " + getProgramNameByPackageName(overallSituationContext.get(), FCGetWork.FCPackageName()), p);
 		n.flags = Notification.FLAG_AUTO_CANCEL;
 		nm.notify(2, n);
 	}
 
-	private static String getProgramNameByPackageName(Context context,
-													  String packageName)
+	public static String getProgramNameByPackageName(Context context,
+													 String packageName)
 	{
         PackageManager pm = context.getPackageManager();
         String name = null;

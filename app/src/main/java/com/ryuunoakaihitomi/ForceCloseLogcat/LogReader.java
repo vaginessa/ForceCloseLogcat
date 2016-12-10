@@ -20,14 +20,12 @@ public class LogReader extends Activity
 	@Override
 	protected void onDestroy()
 	{
-		FileGod.D("/sdcard/FClog/cache");
 		super.onDestroy();
 	}
 
 	@Override
 	protected void onStop()
 	{
-
 		if (!s)
 		{
 			Toast.makeText(LogReader.this, "日志已保存", Toast.LENGTH_SHORT).show();
@@ -159,7 +157,7 @@ public class LogReader extends Activity
 					}
 					else
 					{
-						i.putExtra(Intent.EXTRA_SUBJECT, "应用崩溃日志：来自" + FCGetWork.FCPosition());
+						i.putExtra(Intent.EXTRA_SUBJECT, "应用崩溃日志：来自" + FCGetWork.FCPackageName());
 					}
 					i.putExtra(Intent.EXTRA_TEXT, sendout);  
 					i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
@@ -196,6 +194,4 @@ public class LogReader extends Activity
 		out += logBody;
 		return out;
 	}
-
-
 }
