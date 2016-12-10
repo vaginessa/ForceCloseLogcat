@@ -8,8 +8,8 @@ android {
         applicationId "com.ryuunoakaihitomi.ForceCloseLogcat"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 18
-        versionName "3_サン.終わり"
+        versionCode 20
+        versionName "4_ヨン.終わり"
     }
     buildTypes {
         release {
