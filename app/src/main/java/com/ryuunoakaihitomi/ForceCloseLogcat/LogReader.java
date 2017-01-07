@@ -20,6 +20,7 @@ public class LogReader extends Activity
 	@Override
 	protected void onDestroy()
 	{
+		FileGod.D("/sdcard/FClog/cache");
 		super.onDestroy();
 	}
 
@@ -28,6 +29,7 @@ public class LogReader extends Activity
 	{
 		if (!s)
 		{
+			FileGod.D("/sdcard/FClog/cache");
 			Toast.makeText(LogReader.this, "日志已保存", Toast.LENGTH_SHORT).show();
 			ActivityCollector.finishAll();
 		}
@@ -137,7 +139,7 @@ public class LogReader extends Activity
 				@Override
 				public void onClick(View p1)
 				{
-					String copyout=infoAdd(environment.isChecked()) + logBody;
+					String copyout=infoAdd(environment.isChecked());
 					ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 					cm.setText(copyout);
 					Toast.makeText(getApplicationContext(), "已复制，可以粘贴给开发者了", Toast.LENGTH_SHORT).show();
@@ -148,7 +150,7 @@ public class LogReader extends Activity
 				@Override
 				public void onClick(View p1)
 				{
-					String sendout=infoAdd(environment.isChecked()) + logBody;
+					String sendout=infoAdd(environment.isChecked());
 					Intent i=new Intent(Intent.ACTION_SEND);  
 					i.setType("text/plain");  
 					if (environment.isChecked())

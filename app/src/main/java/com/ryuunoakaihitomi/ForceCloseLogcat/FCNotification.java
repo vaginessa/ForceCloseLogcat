@@ -19,7 +19,6 @@ public class FCNotification
 	}
 	public static void caught(Context c)
 	{
-
 		Intent intent = new Intent(c, LogReader.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		Notification n = new Notification(R.drawable.ic_launcher, "本应用已经捕获一个FC", System.currentTimeMillis());
@@ -27,6 +26,7 @@ public class FCNotification
 		PendingIntent p = PendingIntent.getActivity(c, 0, intent, 0);
 		n.setLatestEventInfo(c, "时刻 " + NowTimeText.get(true) , "来自 " + getProgramNameByPackageName(overallSituationContext.get(), FCGetWork.FCPackageName()), p);
 		n.flags = Notification.FLAG_AUTO_CANCEL;
+		n.priority = Notification.PRIORITY_MIN;
 		nm.notify(2, n);
 	}
 

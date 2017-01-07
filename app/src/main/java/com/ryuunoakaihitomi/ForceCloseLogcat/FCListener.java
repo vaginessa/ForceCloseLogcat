@@ -47,7 +47,7 @@ public class FCListener extends Service implements Runnable
 		{
 			p = Runtime.getRuntime().exec("su");
 			o = new DataOutputStream(p.getOutputStream());
-			o.writeBytes("logcat\n");
+			o.writeBytes("logcat -v threadtime\n");
 			o.flush();
 		}
 		catch (IOException e)
@@ -63,7 +63,7 @@ public class FCListener extends Service implements Runnable
 				{
 					if (line.contains("FATAL EXCEPTION"))
 					{
-						String getLog=new String((line + "\r\n").getBytes("iso-8859-1"), "UTF-8");
+						String getLog=new String((line + "\n").getBytes("iso-8859-1"), "UTF-8");
 						String getView=new String((line + "<br><br>").getBytes("iso-8859-1"), "UTF-8");
 						String getTime="";
 						String getPackage="";
@@ -78,14 +78,14 @@ public class FCListener extends Service implements Runnable
 								}
 							}
 							getView += new String(LogDecorate.line(line.subSequence(48, line.length()) + "<br><br>").getBytes("iso-8859-1"), "UTF-8");
-							getLog += new String((line.subSequence(48, line.length()) + "\r\n").getBytes("iso-8859-1"), "UTF-8");
+							getLog += new String((line.subSequence(48, line.length()) + "\n").getBytes("iso-8859-1"), "UTF-8");
 							Thread.yield();
 						}
 						getTime = NowTimeText.get(false);
 						FileGod.W(getLog, "/sdcard/FClog/" + getTime + ".log");
 						if (Boolean.valueOf(Config.G("mode")))
 						{
-							FileGod.W(getTime, "/sdcard/FClog/cache/FCtime");
+							FileGod.W(getTime, "/sdcard/FClog/cache/FCTime");
 							FileGod.W(getPackage, "/sdcard/FClog/cache/FCPackage");
 							FileGod.W(getView, "/sdcard/FClog/cache/" + getTime + "view");
 							FCGetWork.FCReceive();

@@ -67,7 +67,7 @@ public class MainActivity extends Activity
 					startActivity(i);
 				}
 			});
-		version.setText("版本号:" + getAppVersionName(this));
+		version.setText("版本号:" + getAppVersionName(this.getPackageName()));
 		clear.setOnClickListener(new OnClickListener(){
 
 				@Override
@@ -95,13 +95,13 @@ public class MainActivity extends Activity
 
     }
 
-	private static String getAppVersionName(Context context)
+	public static String getAppVersionName(String PackageName)
 	{
         String versionName = "";
         try
 		{
-            PackageManager pm = context.getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+            PackageManager pm = overallSituationContext.get().getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(PackageName, 0);
             versionName = pi.versionName;
             if (versionName == null || versionName.length() <= 0)
 			{
@@ -109,9 +109,7 @@ public class MainActivity extends Activity
             }
         }
 		catch (Exception e)
-		{
-
-        }
+		{}
         return versionName;
     }
 	public static synchronized boolean isRoot()  

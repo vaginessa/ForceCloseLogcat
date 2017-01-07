@@ -15,9 +15,10 @@ public class RuntimeEnvironmentInformation
 		infobody += "board=" + android.os.Build.BOARD + "\n";
 		infobody += "hardware=" + android.os.Build.HARDWARE + "\n";
 		infobody += "device=" + android.os.Build.DEVICE + "\n";
+		infobody += "version name=" + MainActivity.getAppVersionName(FCGetWork.FCPackageName()) + "\n";
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
 		{
-			infobody += "support_abis=" + stringArrayToString(android.os.Build.SUPPORTED_ABIS, " & ") + "\n";
+			infobody += "supported_abis=" + stringArrayToString(android.os.Build.SUPPORTED_ABIS, " & ") + "\n";
 		}
 		else
 		{

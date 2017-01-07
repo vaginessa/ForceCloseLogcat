@@ -4,10 +4,10 @@ public class LogDecorate
 	public static String kazari(String s)
 	{
 		return s
-			.replace(FCGetWork.FCPackageName(), "\n<font color =\"#0066FF\">" + FCGetWork.FCPackageName() + "</font>\n")
-			.replace("FATAL EXCEPTION:", "\n<font color =\"#FF0000\">FATAL EXCEPTION:</font>\n")
-			.replace("Caused by:", "\n<font color =\"#FF0000\">Caused by:</font>\n")
-			.replace("Process:", "\n<font color =\"#FF0000\">Process:</font>\n");
+			.replace(FCGetWork.FCPackageName(), "<font color =\"#0066FF\">" + FCGetWork.FCPackageName() + "</font>")
+			.replace("FATAL EXCEPTION:", "<font color =\"#FF0000\">FATAL EXCEPTION:</font>")
+			.replace("Caused by:", "<font color =\"#FF0000\">Caused by:</font>")
+			.replace("Process:", "<font color =\"#FF0000\">Process:</font>");
 	}
 	public static String line(String s)
 	{

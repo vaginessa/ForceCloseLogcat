@@ -23,11 +23,11 @@ public class NowTimeText
 		}
 		else
 		{
-			return numberToHex(Long.valueOf(spf.format(d)));
+			return numberTo36type(Long.valueOf(spf.format(d)));
 		}
 	}
 
-	private static String numberToHex(Long n)
+	private static String numberTo36type(Long n)
 	{
 		char[] ch = new char[20];
 		int nIndex = 0;
