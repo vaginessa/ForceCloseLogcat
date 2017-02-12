@@ -3,7 +3,7 @@ import android.os.*;
 
 public class RuntimeEnvironmentInformation
 {
-	public static String _()
+	public static String r()
 	{
 		String infobody="";
 		infobody += "send time=" + NowTimeText.get(true) + "\n";

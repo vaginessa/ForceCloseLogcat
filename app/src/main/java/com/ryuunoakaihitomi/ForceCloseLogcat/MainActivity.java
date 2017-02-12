@@ -86,7 +86,7 @@ public class MainActivity extends Activity
 								Toast.makeText(getApplicationContext(), "所有日志删除完成", Toast.LENGTH_SHORT).show();
 								NotificationManager nm= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 								nm.cancelAll();
-								ResetApp._(MainActivity.this);
+								ResetApp.r(MainActivity.this);
 							}
 						});
 					tashikani.show();

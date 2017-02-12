@@ -4,7 +4,7 @@ import android.content.*;
 
 public class ResetApp
 {
-	public static void _(Context c)
+	public static void r(Context c)
 	{
 		Intent i = c.getPackageManager().getLaunchIntentForPackage(c.getPackageName());  
 		i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);  

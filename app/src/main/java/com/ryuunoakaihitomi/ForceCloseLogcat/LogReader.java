@@ -118,14 +118,14 @@ public class LogReader extends Activity
 				{
 					AlertDialog.Builder tashikani=new AlertDialog.Builder(LogReader.this);
 					tashikani.setTitle("运行时刻环境信息显示:");
-					tashikani.setMessage(RuntimeEnvironmentInformation._());
+					tashikani.setMessage(RuntimeEnvironmentInformation.r());
 					tashikani.setPositiveButton("复制进剪贴板", new DialogInterface.OnClickListener(){
 
 							@Override
 							public void onClick(DialogInterface p1, int p2)
 							{
 								ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-								cm.setText(RuntimeEnvironmentInformation._());
+								cm.setText(RuntimeEnvironmentInformation.r());
 								Toast.makeText(getApplicationContext(), "已复制运行时刻环境信息", Toast.LENGTH_SHORT).show();
 
 							}
@@ -191,7 +191,7 @@ public class LogReader extends Activity
 		String out = "";
 		if (b)
 		{
-			out = "#######RuntimeEnvironmentInformation#######\n" + RuntimeEnvironmentInformation._() + "\n#######ForceCloseCrashLog#######\n";
+			out = "#######RuntimeEnvironmentInformation#######\n" + RuntimeEnvironmentInformation.r() + "\n#######ForceCloseCrashLog#######\n";
 		}
 		out += logBody;
 		return out;
