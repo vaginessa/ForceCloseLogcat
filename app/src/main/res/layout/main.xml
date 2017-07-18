@@ -23,7 +23,13 @@
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
 		android:id="@+id/mainSwitch1"
-		android:text="模式"/>
+		android:text="服务启动开关"/>
+
+	<Switch
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:id="@+id/mainSwitch2"
+		android:text="显性模式开关"/>
 
 	<Button
 		android:layout_height="wrap_content"
@@ -31,6 +37,20 @@
 		android:text="清除文件"
 		android:id="@+id/mainButton4"
 		android:textColor="#FF0000"/>
+
+	<Button
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:text="SELinux闸门"
+		android:id="@+id/mainButton1"
+		android:textColor="#FFFF00"/>
+
+	<Button
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:text="白名单"
+		android:textColor="#FFFFFF"
+		android:id="@+id/mainButton2"/>
 
 	<TextView
 		android:layout_height="wrap_content"

@@ -1,6 +1,7 @@
 package com.ryuunoakaihitomi.ForceCloseLogcat;
 
-import android.content.*;
+import android.content.Context;
+import android.content.Intent;
 
 public class ResetApp
 {

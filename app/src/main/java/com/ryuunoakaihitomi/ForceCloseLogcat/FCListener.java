@@ -1,15 +1,25 @@
 package com.ryuunoakaihitomi.ForceCloseLogcat;
-import android.app.*;
-import android.content.*;
-import android.os.*;
-import java.io.*;
-
-import java.lang.Process;
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+import android.util.Log;
+import com.ryuunoakaihitomi.ForceCloseLogcat.FCGetWork;
+import com.ryuunoakaihitomi.ForceCloseLogcat.FileGod;
+import com.ryuunoakaihitomi.ForceCloseLogcat.UtilityTools;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 
 public class FCListener extends Service implements Runnable
 {
 	boolean RunState = false;
+	static boolean isRoot=false;
+	final String logcmd="logcat -v tag\n";
 	Thread t;
+	int offset_j=18;
+	int offset_n=12;
+	String whitelist;
 	@Override
 	public IBinder onBind(Intent intent)
 	{
@@ -17,25 +27,33 @@ public class FCListener extends Service implements Runnable
 	}
 
 	@Override
+	public int onStartCommand(Intent intent, int flags, int startId)
+	{
+		return super.onStartCommand(intent, flags, startId);
+	}
+
+	@Override
 	public void onCreate()
 	{
 		super.onCreate();
 		RunState = true;
+		new File("/sdcard/FClog").mkdir();
+		new File("/sdcard/FClog/cache").mkdir();
+		new File("/sdcard/FClog/config").mkdir();
+		isRoot = UtilityTools.isRoot();
+		startForeground(1, FCNotification.stateOn());
+		QuickOperationBroadcast.regAll();
 		t = new Thread(this);
-		try
-		{
-			java.lang.Runtime.getRuntime().exec("su -c logcat -c");
-		}
-		catch (IOException e)
-		{}
+		UtilityTools.cmd("logcat -c", isRoot);
 		FileGod.D("/sdcard/FClog/cache");
 		t.start();
-
 	}
 	@Override
 	public void onDestroy()
 	{
+		QuickOperationBroadcast.unregAll();
 		RunState = false;
+		stopForeground(1);
 		super.onDestroy();
 	}
 	@Override
@@ -43,76 +61,141 @@ public class FCListener extends Service implements Runnable
 	{
 		Process p=null;
 		DataOutputStream o=null;
+		String line;
 		try
 		{
-			p = Runtime.getRuntime().exec("su");
-			o = new DataOutputStream(p.getOutputStream());
-			o.writeBytes("logcat -v threadtime\n");
-			o.flush();
+			if (isRoot)
+			{
+				p = Runtime.getRuntime().exec("su");
+				o = new DataOutputStream(p.getOutputStream());
+				o.writeBytes(logcmd);
+				o.flush();
+			}
+			else
+			{
+				p = Runtime.getRuntime().exec(logcmd);
+			}
 		}
 		catch (IOException e)
 		{
 		}
 		DataInputStream dis = new DataInputStream(p.getInputStream());
-		String line = null;
 		while (RunState)
 		{
 			try
 			{
 				while ((line = dis.readLine()) != null)
 				{
-					if (line.contains("FATAL EXCEPTION"))
+					if (judgement(line))
 					{
-						String getLog=new String((line + "\n").getBytes("iso-8859-1"), "UTF-8");
-						String getView=new String((line + "<br><br>").getBytes("iso-8859-1"), "UTF-8");
+						String getCrashTime=NowTimeText.get(true);
+						String getPackage = "";
+						String	 getPID = "";
 						String getTime="";
-						String getPackage="";
-						while ((line = dis.readLine()).contains("AndroidRuntime"))
+						String getLog="";
+						String getView="";
+						getTime = NowTimeText.get(false);
+						String p1="/sdcard/FClog/" + getTime + ".log";
+						String p21="/sdcard/FClog/cache/mode";
+						boolean b=FileGod.R(p21).equals("jvm");
+						if (b)
 						{
-							if (line.contains("Process:"))
+							getLog = new String((line.substring(offset_j) + "\n").getBytes("iso-8859-1"), "UTF-8");
+							getView = new String((LogDecorator.line(line.substring(offset_j)) + "<br><br>").getBytes("iso-8859-1"), "UTF-8");
+							while ((line = dis.readLine()).contains("E/AndroidRuntime:"))
 							{
-								getPackage = line.subSequence(58, line.indexOf(",")).toString();
-								if (getPackage.contains(":"))
+								if (line.contains("Process: "))
 								{
-									getPackage = getPackage.subSequence(0, getPackage.indexOf(":")).toString();
+									getPackage = line.subSequence(9 + offset_j, line.indexOf(", PID:")).toString();
+									if (getPackage.contains(":"))
+									{
+										getPackage = getPackage.split(":")[0];
+									}
+									getPID = line.subSequence(line.indexOf(", PID:") + 7, line.length()).toString();
+								}
+								getLog += new String((line.substring(offset_j) + "\n").getBytes("iso-8859-1"), "UTF-8");
+								getView += new String(LogDecorator.line((line.substring(offset_j)) + "<br><br>").getBytes("iso-8859-1"), "UTF-8");
+							}
+						}
+						else
+						{
+							while ((line = dis.readLine()).contains("F/DEBUG   :"))
+							{
+								if (!line.equals("F/DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***"))
+								{
+									getLog += new String((line.substring(offset_n) + "\n").getBytes("iso-8859-1"), "UTF-8");
+									getView += new String((LogDecorator.line(line.substring(offset_n)) + "<br><br>").getBytes("iso-8859-1"), "UTF-8");
+								}
+								if (line.contains(">>> ") && line.contains(" <<<"))
+								{
+									getPackage = line.subSequence(line.indexOf(">>> ") + 4, line.indexOf(" <<<")).toString();
+									getPID = line.subSequence(line.indexOf(": pid: ") + ": pid: ".length(), line.indexOf(", tid:")).toString();
 								}
 							}
-							getView += new String(LogDecorate.line(line.subSequence(48, line.length()) + "<br><br>").getBytes("iso-8859-1"), "UTF-8");
-							getLog += new String((line.subSequence(48, line.length()) + "\n").getBytes("iso-8859-1"), "UTF-8");
-							Thread.yield();
 						}
-						getTime = NowTimeText.get(false);
-						FileGod.W(getLog, "/sdcard/FClog/" + getTime + ".log");
-						if (Boolean.valueOf(Config.G("mode")))
+						if (whitelist.contains(getPackage) || UtilityTools.getProgramNameByPackageName(getPackage).equals(null))
 						{
+							continue;
+						}
+						FileGod.W(getLog, p1);
+						if (Config.G("quiet").equals("1"))
+						{
+							FileGod.W(getCrashTime, "/sdcard/FClog/cache/FCCrashTime");
 							FileGod.W(getTime, "/sdcard/FClog/cache/FCTime");
 							FileGod.W(getPackage, "/sdcard/FClog/cache/FCPackage");
-							FileGod.W(getView, "/sdcard/FClog/cache/" + getTime + "view");
+							FileGod.W(getPID, "/sdcard/FClog/cache/FCPID");
+							FileGod.W(getView.toString(), "/sdcard/FClog/cache/" + getTime + "view");
 							FCGetWork.FCReceive();
 						}
-						java.lang.Runtime.getRuntime().exec("su -c logcat -c");
 					}
-					Thread.yield();
 				}
 				exitWork(dis, p);
 			}
 			catch (Exception e)
-			{
-			}
+			{}
 		}
 		exitWork(dis, p);
 	}
-	private void exitWork(DataInputStream bridge1, Process bridge2)
+	private void exitWork(DataInputStream b1, Process b2)
 	{
+		UtilityTools.cmd("logcat -c", isRoot);
 		try
 		{
-			java.lang.Runtime.getRuntime().exec("su -c logcat -c");
-			bridge1.close();
+			b1.close();
 		}
 		catch (IOException e)
-		{
-		}
-		bridge2.destroy();
+		{}
+		b2.destroy();
 		stopSelf();
+	}
+	boolean judgement(String l)
+	{
+		whitelist = Config.G("whitelist");
+		if (Config.G("quiet").equals("0"))
+		{
+			stopForeground(true);
+		}
+		else
+		{
+			startForeground(1, FCNotification.stateOn());
+		}
+		if (l.contains("FATAL EXCEPTION"))
+		{
+			if (l.contains("D/OkHttp"))
+			{
+				return false;
+			}
+			else
+			{
+				FileGod.W("jvm", "/sdcard/FClog/cache/mode");
+				return true;
+			}
+		}
+		if (l.equals("F/DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***"))
+		{
+			FileGod.W("ndk", "/sdcard/FClog/cache/mode");
+			return true;
+		}
+		return false;
 	}
 }

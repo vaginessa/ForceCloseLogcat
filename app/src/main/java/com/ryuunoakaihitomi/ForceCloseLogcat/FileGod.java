@@ -1,15 +1,26 @@
 package com.ryuunoakaihitomi.ForceCloseLogcat;
 
-import java.io.*;
-import org.apache.http.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import org.apache.http.util.EncodingUtils;
 
 public class FileGod
 {
-	public static void D(String path)
+	static void D(String path)
 	{
 		delete(new File(path));
 	}
-	public static void W(String write_str, String fileName)
+	static void W(String write_str, String fileName)
+	{  
+		if (fileName.contains("/sdcard/FClog"))
+		{
+			Wk("这个是应用崩溃日志记录器("+UtilityTools.pkg+")创建并使用的目录，如果不再使用利用本应用及相关数据可以删除","/sdcard/FClog/说明.txt");
+		}
+		Wk(write_str,fileName);
+	}
+	static void Wk(String write_str, String fileName)
 	{  
         try
 		{
@@ -27,7 +38,7 @@ public class FileGod
 		catch (IOException e)
 		{} 
 	} 
-	public static String R(String fileName)
+	static String R(String fileName)
 	{  
 		String res="";
         try

@@ -1,14 +1,21 @@
 package com.ryuunoakaihitomi.ForceCloseLogcat;
-import android.app.*;
-import android.content.*;
-import android.os.*;
-import android.text.*;
-import android.view.*;
-import android.view.View.*;
-import android.widget.*;
-import java.io.*;
-
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.Html;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Toast;
+import android.webkit.WebView;
 
 public class LogReader extends Activity
 {
@@ -31,7 +38,6 @@ public class LogReader extends Activity
 		{
 			FileGod.D("/sdcard/FClog/cache");
 			Toast.makeText(LogReader.this, "日志已保存", Toast.LENGTH_SHORT).show();
-			ActivityCollector.finishAll();
 		}
 		super.onStop();
 	}
@@ -55,7 +61,6 @@ public class LogReader extends Activity
 			{
 				Toast.makeText(LogReader.this, "日志文件已保留至 " + filePath, Toast.LENGTH_SHORT).show();
 			}
-			ActivityCollector.finishAll();
 		}
 
 		return super.onKeyDown(keyCode, event);
@@ -71,14 +76,13 @@ public class LogReader extends Activity
 		EditText read=(EditText) findViewById(R.id.readerEditText1);
 		final CheckBox environment=(CheckBox) findViewById(R.id.readerCheckBox1);
 		filesave = (CheckBox) findViewById(R.id.readerCheckBox2);
-		filePath = "/sdcard/FClog/" + FCGetWork.FCTime() + ".log";
-		ActivityCollector.addActivity(this);
+		filePath ="/sdcard/FClog/"+ FCGetWork.FCTime() + ".log";
 		logView = FCGetWork.FCLogView();
 		logBody = FCGetWork.FCLogBody();
-		if (fileIsExists(filePath))
+		if (UtilityTools.fileIsExists(filePath))
 		{
 			environment.setChecked(true);
-			read.setText(Html.fromHtml(LogDecorate.kazari(logView)));
+				read.setText(Html.fromHtml(LogDecorator.kazari(logView)));
 		}
 		else
 		{
@@ -167,25 +171,6 @@ public class LogReader extends Activity
 				}
 			});
 	}
-
-	private static boolean fileIsExists(String strFile)
-    {
-        try
-        {
-            File f=new File(strFile);
-            if (!f.exists())
-            {
-				return false;
-            }
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
-        return true;
-    }
-
-
 	private String infoAdd(boolean b)
 	{
 		String out = "";

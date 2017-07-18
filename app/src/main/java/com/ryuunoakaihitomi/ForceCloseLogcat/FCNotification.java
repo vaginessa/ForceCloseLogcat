@@ -1,51 +1,69 @@
 package com.ryuunoakaihitomi.ForceCloseLogcat;
 
-import android.app.*;
-import android.content.*;
-import android.content.pm.*;
-import android.content.pm.PackageManager.*;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 
 public class FCNotification
 {
-	public static void stateOn(Context c)
+	static Context c=overallSituationContext.get();
+	static Notification stateOn()
 	{
-		NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification n = new Notification(R.drawable.ic_launcher, "应用崩溃监听服务启动", System.currentTimeMillis());
-		Intent i = new Intent();
-		PendingIntent p = PendingIntent.getActivity(c, 0, i, 0);
-		n.setLatestEventInfo(c, "应用崩溃监听服务", "启动中......", p);
-		n.flags = Notification.FLAG_NO_CLEAR;
-		nm.notify(1, n);
+		Notification n=new Notification.Builder(c)
+			.setContentTitle("应用崩溃监听服务")
+			.setContentText("启动中......")
+			.setOngoing(true)
+			.setContentIntent(PendingIntent
+							  .getActivity(c, 0, new Intent(c, MainActivity
+															.class), 0))
+			.setSmallIcon(R.drawable.ic_launcher)
+			.build();
+		n.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_ONLY_ALERT_ONCE;
+		return n;
 	}
-	public static void caught(Context c)
+	static void caught()
 	{
-		Intent intent = new Intent(c, LogReader.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-		Notification n = new Notification(R.drawable.ic_launcher, "本应用已经捕获一个FC", System.currentTimeMillis());
-		NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
-		PendingIntent p = PendingIntent.getActivity(c, 0, intent, 0);
-		n.setLatestEventInfo(c, "时刻 " + NowTimeText.get(true) , "来自 " + getProgramNameByPackageName(overallSituationContext.get(), FCGetWork.FCPackageName()), p);
+		Notification.BigTextStyle nbs=new Notification.BigTextStyle();
+		nbs.bigText(FCGetWork.FCLogBody());
+		Intent i = new Intent(c, LogReader.class);
+		PendingIntent p = PendingIntent.getActivity(c, 0, i, 0);
+		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+		Notification.Builder nb=new Notification.Builder(c);
+		boolean b=FileGod.R("/sdcard/FClog/cache/mode").equals("jvm");
+		if (b)
+		{
+			nb.setContentTitle("JVM FC已被捕获");
+		}
+		else
+		{
+			nb.setContentTitle("NDK FC已被捕获");
+		}
+		nb.setWhen(0)
+			.setDeleteIntent(PendingIntent
+							 .getBroadcast(c, 0, new Intent(UtilityTools.pkg + ".slide"), 0))
+			.setContentText("时刻 " + NowTimeText.get(true))
+			.setSubText("来自 " + UtilityTools.getProgramNameByPackageName(FCGetWork.FCPackageName()) + "(" + FCGetWork.FCPID() + ")")
+			.setContentIntent(p)
+			.setStyle(nbs)
+			.addAction(0, "复制", PendingIntent.getBroadcast(c, 0, new Intent(UtilityTools.pkg + ".copy"), 0))
+			.addAction(0, "删除", PendingIntent.getBroadcast(c, 0, new Intent(UtilityTools.pkg + ".delete"), 0))
+			.addAction(0, "分享", PendingIntent.getBroadcast(c, 0, new Intent(UtilityTools.pkg + ".share"), 0))
+			.setAutoCancel(true)
+			.setSmallIcon(R.drawable.ic_launcher);
+		if (Build.VERSION.SDK_INT >= 21)
+		{
+			nb.setColor(Color.RED)
+				.setFullScreenIntent(p, true);
+		}
+		Notification n=nb.build();
+
 		n.flags = Notification.FLAG_AUTO_CANCEL;
 		n.priority = Notification.PRIORITY_MIN;
-		nm.notify(2, n);
+		NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+		nm.notify("ForceCloseLogcat", 2, n);
 	}
-
-	public static String getProgramNameByPackageName(Context context,
-													 String packageName)
-	{
-        PackageManager pm = context.getPackageManager();
-        String name = null;
-        try
-		{
-            name = pm.getApplicationLabel(
-				pm.getApplicationInfo(packageName,
-									  PackageManager.GET_META_DATA)).toString();
-        }
-		catch (NameNotFoundException e)
-		{
-            e.printStackTrace();
-        }
-        return name;
-    }
-
 }

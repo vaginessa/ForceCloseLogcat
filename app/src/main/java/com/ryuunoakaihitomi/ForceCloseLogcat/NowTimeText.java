@@ -1,7 +1,7 @@
 package com.ryuunoakaihitomi.ForceCloseLogcat;
 
-import java.text.*;
-import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class NowTimeText
 {
@@ -10,11 +10,11 @@ public class NowTimeText
 		SimpleDateFormat spf;
 		if (mode)
 		{
-			spf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			spf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		}
 		else
 		{
-			spf = new SimpleDateFormat("yyyyMMddHHmmss");
+			spf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 		}
 		Date d= new Date(System.currentTimeMillis());
 		if (mode)

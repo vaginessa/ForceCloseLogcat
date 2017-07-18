@@ -3,39 +3,12 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:orientation="vertical"
-	android:gravity="right">
+	android:orientation="vertical">
 
-	<TextView
-		android:layout_height="wrap_content"
-		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:layout_width="wrap_content"
-		android:text="帮助"/>
-
-	<TextView
+	<WebView
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
-		android:text="本应用可以记录应用崩(Force)溃(Close)时的AndroidRuntime发出的日志应用。适合一些没有带异常处理的应用的崩溃日志记录。（就是出现很抱歉，xxx已停止运行窗口时记录日志以方便传给FC应用的开发者提交bug的应用。日志有利于开发者修复bug。）使用时需要root。"
-		android:textColor="#000000"
-		android:gravity="fill_vertical"
-		android:textSize="12sp"/>
-
-	<TextView
-		android:text="主要使用方法\n1.开启本应用或者重启设备。监听服务会自动启动。如果没有root授权请完成root授权，有时这会延迟几秒钟，最好初次打开之前请先打开授权管理应用以防止su延迟。\n2.有两个模式。开启开关为普通用户模式，这个模式中如果捕获到崩溃会弹出一条通知显示最近的崩溃窗口，并且如果在应用窗口开启则会再显示一条常驻通知。关闭开关为开发者模式，这个模式在监听到FC时只会记录日志。不会弹出通知。如果初次打开开关，请打开之后再次打开应用设置方可生效。\n3.执行能使待测试应用崩溃的操作，出现停止运行窗口后点击本应用弹出的通知。可以查看、复制或发送日志。阅读器不允许被退到后台防止输出的日志不是最新的日志，阅读器仅能处理一份日志。\n4.记录的日志会形成文件保存下来，点击清理文件可以一键删除内置存储中FClog文件夹中的所有内容，包括日志，设置，缓存。。。\n\n日志阅读器中，长按选择框查看运行时刻环境信息，长按保留日志查看日志文件保存位置。\n\n注意：有时superSU会弹出由本应用引起的讨厌的toast，这时只要到superSU中本应用的选项禁用通知即可。"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:textSize="12sp"/>
-
-	<ProgressBar
-		style="?android:attr/progressBarStyleLarge"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:id="@+id/helpProgressBar1"/>
-
-	<TextView
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:text="制作者：酷安网@龙红瞳\n日期：20170106"/>
+		android:id="@+id/helpWebView1"/>
 
 </LinearLayout>
 
