@@ -15,6 +15,7 @@ public class FCListener extends Service implements Runnable
 {
 	boolean RunState = false;
 	static boolean isRoot=false;
+	boolean noti_status=false;
 	final String logcmd="logcat -v tag\n";
 	Thread t;
 	int offset_j=18;
@@ -53,7 +54,7 @@ public class FCListener extends Service implements Runnable
 	{
 		QuickOperationBroadcast.unregAll();
 		RunState = false;
-		stopForeground(1);
+		stopForeground(true);
 		super.onDestroy();
 	}
 	@Override
@@ -119,9 +120,9 @@ public class FCListener extends Service implements Runnable
 						}
 						else
 						{
-							while ((line = dis.readLine()).contains("F/DEBUG   :"))
+							while ((line = dis.readLine()).contains("DEBUG   :"))
 							{
-								if (!line.equals("F/DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***"))
+								if (!line.contains("*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***"))
 								{
 									getLog += new String((line.substring(offset_n) + "\n").getBytes("iso-8859-1"), "UTF-8");
 									getView += new String((LogDecorator.line(line.substring(offset_n)) + "<br><br>").getBytes("iso-8859-1"), "UTF-8");
@@ -171,13 +172,18 @@ public class FCListener extends Service implements Runnable
 	boolean judgement(String l)
 	{
 		whitelist = Config.G("whitelist");
-		if (Config.G("quiet").equals("0"))
+		if (Config.G("quiet").equals("1"))
 		{
-			stopForeground(true);
+			if (!noti_status)
+			{
+				startForeground(1, FCNotification.stateOn());
+				noti_status = true;
+			}
 		}
 		else
 		{
-			startForeground(1, FCNotification.stateOn());
+			stopForeground(true);
+			noti_status = false;
 		}
 		if (l.contains("FATAL EXCEPTION"))
 		{
@@ -191,7 +197,7 @@ public class FCListener extends Service implements Runnable
 				return true;
 			}
 		}
-		if (l.equals("F/DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***"))
+		if (l.contains("*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***"))
 		{
 			FileGod.W("ndk", "/sdcard/FClog/cache/mode");
 			return true;
