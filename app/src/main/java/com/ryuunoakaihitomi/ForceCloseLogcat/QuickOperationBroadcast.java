@@ -35,7 +35,7 @@ public class QuickOperationBroadcast
 		@Override
 		public void onReceive(Context p1, Intent p2)
 		{
-			Toast.makeText(c, String.format("检测到你划掉了通知，所以最新的日志自动保存。可自行打开文件管理器查看。\n\n崩溃时间:%s\n崩溃应用名称:%s(%s)\n日志保存位置:%s", NowTimeText.get(true),UtilityTools.getProgramNameByPackageName(FCGetWork.FCPackageName()) , FCGetWork. FCPackageName(), FCGetWork. FCLogPath()), Toast.LENGTH_LONG).show();
+			Toast.makeText(c, String.format("检测到你划掉了通知，所以最新的日志自动保存。可自行打开文件管理器查看。\n\n崩溃时间:%s\n崩溃应用名称:%s(%s)\n日志保存位置:%s", NowTimeText.get(true), UtilityTools.getProgramNameByPackageName(FCGetWork.FCPackageName()) , FCGetWork. FCPackageName(), FCGetWork. FCLogPath()), Toast.LENGTH_LONG).show();
 			FileGod.D("/sdcard/FClog/cache");
 		}
 	};
@@ -48,16 +48,18 @@ public class QuickOperationBroadcast
 				.putExtra(Intent.EXTRA_SUBJECT, "应用崩溃日志：")
 				.putExtra(Intent.EXTRA_TEXT, log())
 				.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
-			c.startActivity(Intent.createChooser(i, "应用崩溃日志记录器：将日志内容发送给开发者"));  
+			Intent i2=Intent.createChooser(i, "应用崩溃日志记录器：将日志内容发送给开发者")
+				.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			c.startActivity(i2);  
 		}
 	};
 
 	static void regAll()
 	{
-		reg(delete, UtilityTools.pkg+".delete");
-		reg(copy, UtilityTools.pkg+".copy");
-		reg(slide, UtilityTools.pkg+".slide");
-		reg(share,UtilityTools.pkg+".share");
+		reg(delete, UtilityTools.pkg + ".delete");
+		reg(copy, UtilityTools.pkg + ".copy");
+		reg(slide, UtilityTools.pkg + ".slide");
+		reg(share, UtilityTools.pkg + ".share");
 	}
 	static void unregAll()
 	{
